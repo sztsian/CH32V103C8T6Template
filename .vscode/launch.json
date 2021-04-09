@@ -1,0 +1,51 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		/*
+		{//本地调试 STM32专用
+			"name": "Local Debug",
+			"cwd": "${workspaceRoot}",
+			"executable": "./build/${workspaceRootFolderName}.elf",
+			"request": "launch",
+			"type": "cortex-debug",
+			"preLaunchTask": "build",
+			"servertype": "openocd",
+			"configFiles": [
+				"openocd.cfg"
+			]
+		},
+		// */
+		{ //另一种调试方案,需要用StartOCD单独打开OCD.调试的时候不会进入startup_xxx.s文件,支持通过网络调试
+			//有一个美中不足之处:需要在装载文件的地方手工指定全路径
+			"name": "Remote Debug",
+			"type": "cppdbg",
+			"request": "launch",
+			"miDebuggerPath": "${env:RVGCC}/riscv-none-embed-gdb.exe",
+			"targetArchitecture": "arm",
+			"program": "${workspaceFolder}/build/CH32V103C8T6.elf",
+			"preLaunchTask": "build",
+			"setupCommands": [
+				{
+					"description": "装载文件",
+					"text": "file 'C:/MounRiver_User/workspace/${workspaceRootFolderName}/build/CH32V103C8T6.elf'",
+					//"ignoreFailures": true   //忽略异常
+				},
+				{
+					"text": "target remote localhost:3333"
+				},
+				{
+					"text": "monitor reset"
+				},
+				{
+					"text": "monitor halt"
+				},
+				{
+					"text": "load"
+				}
+			],
+			"launchCompleteCommand": "None",
+			"externalConsole": true,
+			"cwd": "${workspaceFolder}"
+		}
+	]
+}
